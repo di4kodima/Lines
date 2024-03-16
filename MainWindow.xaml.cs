@@ -115,7 +115,9 @@ namespace Линии
                     a.StrokeThickness = 0.5;
                     a.Height = 10;
                     a.Width = 10;
-                    a.Fill = Brushes.Aqua;
+
+                    if(charge > 0) { a.Fill = Brushes.Red; }
+                    else a.Fill = Brushes.Blue;
 
                     GridField.Children.Add(a);
                         break;
@@ -140,13 +142,24 @@ namespace Линии
 
             PointCharge test = Charges[0];
             List<double> values = new();
-            for (int i = 0; i < 100; i += 10)
+
+            if (!double.TryParse(TbxLInesCount.Text, out double CountLines))
+                return;
+
+            if (!double.TryParse(TbxLInesCount_Копировать.Text, out double LinesH))
+                return;
+
+            for (int i = (int)LinesH; i < CountLines * LinesH; i += (int)LinesH)
                 values.Add(func(test.position.X + i, test.position.Y));
 
-
             double h = 2;
-            for (double i = 0; i < 600; i++)
-                for (double j = 0; j < 300; j++)
+            if(!double.TryParse(TbxEps.Text,out h))
+            {
+                return;
+            }
+
+            for (double i = 0; i < 1200/h; i++)
+                for (double j = 0; j < 800/h; j++)
                 {
                     foreach (var val in values)
                     {
@@ -155,6 +168,27 @@ namespace Линии
                         Rastr(0 + h * i, 0 + h * j, h, -val);
                     }
                 }
+        }
+
+        private void BtnReMoveLast_Click(object sender, RoutedEventArgs e)
+        {
+            if(Charges.Count == 0) return;
+
+            Charges.RemoveAt(Charges.Count - 1);
+
+            List<UIElement> asd = new List<UIElement>();
+            foreach (var val in GridField.Children)
+            {
+                if (val is Ellipse)
+                    asd.Add(val as Ellipse);
+            }
+            GridField.Children.Remove(asd[GridField.Children.Count - 1]);
+        }
+
+        private void TbnClear_Click(object sender, RoutedEventArgs e)
+        {
+            Charges.Clear();
+            GridField.Children.Clear();
         }
     }
 

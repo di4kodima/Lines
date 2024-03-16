@@ -18,3 +18,4 @@ C:\Users\Дмитрий\Desktop\Учеба 2 курс\2 семестр\КМК\Л
 C:\Users\Дмитрий\Desktop\Учеба 2 курс\2 семестр\КМК\Линии\obj\Debug\net8.0-windows\Линии.pdb
 C:\Users\Дмитрий\Desktop\Учеба 2 курс\2 семестр\КМК\Линии\obj\Debug\net8.0-windows\Линии.genruntimeconfig.cache
 C:\Users\Дмитрий\Desktop\Учеба 2 курс\2 семестр\КМК\Линии\obj\Debug\net8.0-windows\ref\Линии.dll
+C:\Users\Дмитрий\Desktop\Учеба 2 курс\2 семестр\КМК\Линии\obj\Debug\net8.0-windows\Линии.sourcelink.json
