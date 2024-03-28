@@ -7,22 +7,29 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="698" Width="1214">
     <Grid x:Name="Main">
-        <Grid x:Name="GridField"  MouseLeftButtonDown="GridField_MouseDown" Margin="0,150,0,0" Background="Beige">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="130"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid x:Name="GridField" Grid.Row="1" Grid.Column="0" MouseLeftButtonDown="GridField_MouseDown" Background="Beige">
         </Grid>
-        <ComboBox x:Name="CbxObjectType" HorizontalAlignment="Left" Margin="37,30,0,0" VerticalAlignment="Top" Width="120" SelectedIndex="0"/>
-        <TextBox x:Name="TbxCharge" HorizontalAlignment="Left" Margin="84,94,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="120"/>
-        <Button Content="Запуск" HorizontalAlignment="Left" Margin="1090,10,0,0"  VerticalAlignment="Top" Width="111" Click="Button_Click"/>
-        <Label x:Name="OutLb" Content="Label" HorizontalAlignment="Left" Margin="569,28,0,0" VerticalAlignment="Top"/>
-        <TextBox x:Name="TbxEps" HorizontalAlignment="Left" Margin="325,36,0,0" TextWrapping="Wrap" Text="2" VerticalAlignment="Top" Width="120"/>
-        <TextBox x:Name="TbxLInesCount" HorizontalAlignment="Left" Margin="804,40,0,0" TextWrapping="Wrap" Text="10" VerticalAlignment="Top" Width="120"/>
-        <TextBox x:Name="TbxLInesCount_Копировать" HorizontalAlignment="Left" Margin="804,72,0,0" TextWrapping="Wrap" Text="10" VerticalAlignment="Top" Width="120"/>
+        <ComboBox x:Name="CbxObjectType" Grid.Row="0" HorizontalAlignment="Left" Margin="37,30,0,0" VerticalAlignment="Top" Width="120" SelectedIndex="0"/>
+        <TextBox x:Name="TbxCharge"  Grid.Row="0" HorizontalAlignment="Left" Margin="84,94,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="120"/>
+        <Button Content="Запуск"  Grid.Row="0" HorizontalAlignment="Left" Margin="1090,10,0,0"  VerticalAlignment="Top" Width="111" Click="Button_Click"/>
+        <Label  Grid.Row="0" Content="Диапазон:" HorizontalAlignment="Left" Margin="475,31,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="TbxEps"  Grid.Row="0" HorizontalAlignment="Left" Margin="325,36,0,0" TextWrapping="Wrap" Text="10" VerticalAlignment="Top" Width="120"/>
+        <TextBox x:Name="TbxLInesCount"  Grid.Row="0" HorizontalAlignment="Left" Margin="965,12,0,0" TextWrapping="Wrap" Text="10" VerticalAlignment="Top" Width="120"/>
+        <TextBox x:Name="TbxLInesCount_Копировать" HorizontalAlignment="Left" Margin="965,44,0,0" TextWrapping="Wrap" Text="10" VerticalAlignment="Top" Width="120"/>
         <Label Content="Заряд" HorizontalAlignment="Left" Margin="37,90,0,0" VerticalAlignment="Top"/>
-        <Label Content="Кол-во линий поля" HorizontalAlignment="Left" Margin="683,36,0,0" VerticalAlignment="Top"/>
-        <Label x:Name="Шаг_между_линиями" Content="Шаг между линиями" HorizontalAlignment="Left" Margin="683,67,0,0" VerticalAlignment="Top"/>
+        <Label Content="Кол-во линий поля" HorizontalAlignment="Left" Margin="844,8,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="Шаг_между_линиями" Content="Шаг между линиями" HorizontalAlignment="Left" Margin="844,39,0,0" VerticalAlignment="Top"/>
         <Label x:Name="Размер_растра" Content="Размер растра" HorizontalAlignment="Left" Margin="204,31,0,0" VerticalAlignment="Top"/>
         <Button x:Name="BtnReMoveLast" Click="BtnReMoveLast_Click" Content="Удалить последний" HorizontalAlignment="Left" Margin="1090,39,0,0" VerticalAlignment="Top"/>
         <Button Content="Button" HorizontalAlignment="Left" Margin="1132,115,0,0" VerticalAlignment="Top"/>
         <Button Content="Button" HorizontalAlignment="Left" Margin="1132,90,0,0" VerticalAlignment="Top"/>
         <Button x:Name="TbnClear" Click="TbnClear_Click" Content="Очистить" HorizontalAlignment="Left" Margin="1090,64,0,0" VerticalAlignment="Top" Width="111"/>
+        <Label  Grid.Row="0" Content="до:" HorizontalAlignment="Left" Margin="666,32,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="TbxMinFieldValue" HorizontalAlignment="Left" Margin="541,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" Text="10000000"/>
+        <TextBox x:Name="TbxMaxFieldValue" HorizontalAlignment="Left" Margin="697,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" Text="200000000"/>
     </Grid>
 </Window>

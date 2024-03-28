@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -23,7 +25,7 @@ namespace Линии
         
         Objects CurBrush;
         List<Object> particls = new();
-        List<PointCharge> Charges = new();
+        List<ChargeObject> Charges = new();
         public MainWindow()
         {
             InitializeComponent();
@@ -61,9 +63,9 @@ namespace Линии
                 Line line = new Line();
                 double a = 1;
                 line.X1 = points[0].X /a;
-                line.Y1 = points[0].Y /a - 150;
+                line.Y1 = points[0].Y /a - 130;
                 line.X2 = points[1].X /a;
-                line.Y2 = points[1].Y /a - 150;
+                line.Y2 = points[1].Y /a - 130;
                 line.Stroke = System.Windows.Media.Brushes.LightSteelBlue;
                 GridField.Children.Add(line);
             }
@@ -74,34 +76,54 @@ namespace Линии
             double min = Math.Min(func(x1, y1), func(x2, y2));
             double max = Math.Max(func(x1, y1), func(x2, y2));
             if(x1 != x2)
-                p.X = x1 + h *(v - min)/(max - min);
+                if (func(x1,y1) < func(x2,y2))
+                    p.X = x1 + h *(v - min)/(max - min);
+                else
+                    p.X = x1 + h * ( 1 - (v - min) / (max - min));
             else
                 p.X = x1;
+
             if(y2 != y1)
-                p.Y = y1 + h *(v - min)/(max - min);
+                if (func(x1, y1) > func(x2, y2))
+                    p.Y= y1 + h *(1 - (v - min) / (max - min));
+                else
+                    p.Y = y1 + h * ( (v - min) / (max - min));
+
             else
                 p.Y= y1;
-            return (v <= max && v > min);
+                return (v <= max && v > min);
         }
 
         double func(double x, double y)
         {
-            double k = 8.987551787e9;
             double Field = 0;
-            foreach(PointCharge charge in Charges)
+            foreach(ChargeObject charge in Charges)
             {
-
-                double r = Math.Sqrt(Math.Pow((x - charge.position.X), 2) + Math.Pow((y - charge.position.Y), 2));
-                Field += charge.charge * k / (r * r);
+                Field += charge.GetField(x, y);
             }
             return Field;
         }
 
+        double _func(double x, double y)
+        {
+            return x - 2 * y;
+        }
 
         private void GridField_MouseDown(object sender, MouseButtonEventArgs e)
         {
             Point mouse = e.GetPosition((IInputElement)this);
-            OutLb.Content = mouse.ToString();
+
+            if (e.RightButton == MouseButtonState.Pressed)
+            {
+                MessageBox.Show("ПКМ");
+                double value = func(mouse.X, mouse.Y);
+                if (!double.TryParse(TbxEps.Text, out double h))
+                    return;
+                Rastr(mouse.X, mouse.Y, h, value);
+            }
+            if (e.LeftButton != MouseButtonState.Pressed)
+                return;
+
             if (!Double.TryParse(TbxCharge.Text, out double charge))
                 return;
             switch (CurBrush)
@@ -126,34 +148,43 @@ namespace Линии
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            List<UIElement> ellipsesToRemove = new List<UIElement>();
+            if (Charges.Count == 0) return;
+
+            //Мусорка для старых линий
+            List<UIElement> LinesToRemove = new List<UIElement>();
+
+            //Ещем все объекты, которые линии
             foreach (UIElement element in GridField.Children)
             {
                 if (element is Line)
                 {
-                    ellipsesToRemove.Add(element as Line);
+                    LinesToRemove.Add(element as Line);
                 }
             }
 
-            foreach (UIElement ellipse in ellipsesToRemove)
+            //Удаляем прошлые линии
+            foreach (UIElement Line in LinesToRemove)
             {
-                GridField.Children.Remove(ellipse);
+                GridField.Children.Remove(Line);
             }
 
-            PointCharge test = Charges[0];
             List<double> values = new();
 
-            if (!double.TryParse(TbxLInesCount.Text, out double CountLines))
+            if (!double.TryParse(TbxMinFieldValue.Text, out double MinField))
                 return;
 
-            if (!double.TryParse(TbxLInesCount_Копировать.Text, out double LinesH))
+            if (!double.TryParse(TbxMaxFieldValue.Text, out double MaxField))
                 return;
 
-            for (int i = (int)LinesH; i < CountLines * LinesH; i += (int)LinesH)
-                values.Add(func(test.position.X + i, test.position.Y));
+            if (!double.TryParse(TbxLInesCount.Text, out double LinesCount))
+                return;
 
-            double h = 2;
-            if(!double.TryParse(TbxEps.Text,out h))
+            for (int i = 0; i < LinesCount; i++ )// (MaxField / LinesCount))
+            {
+                //MessageBox.Show($"{i}");
+                values.Add(MaxField / LinesCount * i);
+            }
+            if(!double.TryParse(TbxEps.Text,out double h))
             {
                 return;
             }
@@ -182,7 +213,7 @@ namespace Линии
                 if (val is Ellipse)
                     asd.Add(val as Ellipse);
             }
-            GridField.Children.Remove(asd[GridField.Children.Count - 1]);
+            GridField.Children.Remove(asd[asd.Count - 1]);
         }
 
         private void TbnClear_Click(object sender, RoutedEventArgs e)
@@ -192,13 +223,34 @@ namespace Линии
         }
     }
 
-    public struct PointCharge
+    public abstract class ChargeObject
     {
-        public Point position;
-        public double charge;
+        protected ChargeObject(Point position, double charge)
+        {
+            Position = position;
+            Charge = charge;
+        }
 
-        public PointCharge(Point position, double charge)
-        { this.position = position; this.charge = charge;}
+        public double Charge { get; set; }
+        public Point Position { get; set; }
+
+        public abstract double GetField(double x, double y);
+    }
+    public class PointCharge : ChargeObject
+    {
+
+        public PointCharge(Point position, double charge) : base(position, charge)
+        {
+            base.Position = position;
+            base.Charge = charge;
+        }
+
+        public override double GetField(double x, double y)
+        {
+            double k = 8.987551787e9;
+            double r = Math.Sqrt(Math.Pow((x - Position.X), 2) + Math.Pow((y - Position.Y), 2));
+            return Charge * k / (r * r);
+        }
     }
 
 }
