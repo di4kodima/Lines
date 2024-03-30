@@ -225,7 +225,7 @@ namespace Линии
 
         private void BtnForceLines_Click(object sender, RoutedEventArgs e)
         {
-
+            /*
             List<UIElement> LinesToRemove = new List<UIElement>();
 
             //Ещем все объекты, которые линии
@@ -242,6 +242,7 @@ namespace Линии
             {
                 GridField.Children.Remove(Line);
             }
+            */
 
             if (!int.TryParse(TbxForceLInesCount.Text, out int LinesCount))
                 return;
@@ -277,28 +278,26 @@ namespace Линии
             if(MaxCount <= 0) { return; }
 
             Vector Vres = new();
-            Double h = 2;
+
+            Double h = 5;
+            if (start.X > 2000 || start.X < 0 || start.Y > 1000 || start.Y < 0)
+                h = 100;
 
             foreach (ChargeObject Charge in Charges) 
             { 
                 if(Charge.GetField(start.X, start.Y) < -1000000000) { return; }
 
-                Vector v = new();
-                if (Charge.Charge <= 0)
-                    {
-                    v.X = Charge.Position.X - start.X;
-                    v.Y = Charge.Position.Y - start.Y;
-                }
-                else
+                Vector v = new()
                 {
-                    v.X = -Charge.Position.X + start.X;
-                    v.Y = -Charge.Position.Y + start.Y;
-                }
+                    X = -Charge.Position.X + start.X,
+                    Y = -Charge.Position.Y + start.Y
+                };
+
                 v.Normalize();
+                //v *= Math.Abs(Charge.GetField(start.X, start.Y));
                 v *= Charge.GetField(start.X, start.Y);
 
                 Vres += v;
-
             }
 
             Vres.Normalize();
