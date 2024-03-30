@@ -11,6 +11,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Linq;
 
 namespace Линии
 {
@@ -221,7 +222,103 @@ namespace Линии
             Charges.Clear();
             GridField.Children.Clear();
         }
+
+        private void BtnForceLines_Click(object sender, RoutedEventArgs e)
+        {
+
+            List<UIElement> LinesToRemove = new List<UIElement>();
+
+            //Ещем все объекты, которые линии
+            foreach (UIElement element in GridField.Children)
+            {
+                if (element is Line)
+                {
+                    LinesToRemove.Add(element as Line);
+                }
+            }
+
+            //Удаляем прошлые линии
+            foreach (UIElement Line in LinesToRemove)
+            {
+                GridField.Children.Remove(Line);
+            }
+
+            if (!int.TryParse(TbxForceLInesCount.Text, out int LinesCount))
+                return;
+
+            float r = 20f; // Хард код
+            IEnumerable<ChargeObject> PosCharges = Charges.Where(point => point.Charge > 0);
+
+            foreach (ChargeObject PosCharge in PosCharges) 
+            {
+                for(float a = 0; a < Math.PI * 2; a += (float)Math.PI * 2 / LinesCount)
+                {
+                    Point point = new(PosCharge.Position.X + Math.Cos(a) * r,PosCharge.Position.Y + Math.Sin(a) * r);
+
+                    Ellipse p = new();
+                    p.RenderTransform = new TranslateTransform { X = point.X -600, Y = point.Y - 400};
+                    p.Margin = new();
+                    p.StrokeThickness = 0.5;
+                    p.Height = 2;
+                    p.Width = 2;
+                    p.Fill = Brushes.Orange;
+
+                    GridField.Children.Add(p);
+
+                    ForceLinesPaint(point);
+
+                }
+            }
+        }
+        
+        void ForceLinesPaint(Point start, int MaxCount = 1000)
+        {
+            MaxCount--;
+            if(MaxCount <= 0) { return; }
+
+            Vector Vres = new();
+            Double h = 2;
+
+            foreach (ChargeObject Charge in Charges) 
+            { 
+                if(Charge.GetField(start.X, start.Y) < -1000000000) { return; }
+
+                Vector v = new();
+                if (Charge.Charge <= 0)
+                    {
+                    v.X = Charge.Position.X - start.X;
+                    v.Y = Charge.Position.Y - start.Y;
+                }
+                else
+                {
+                    v.X = -Charge.Position.X + start.X;
+                    v.Y = -Charge.Position.Y + start.Y;
+                }
+                v.Normalize();
+                v *= Charge.GetField(start.X, start.Y);
+
+                Vres += v;
+
+            }
+
+            Vres.Normalize();
+            Vres *= h;
+
+            Line line = new Line();
+            double a = 1;
+            line.X1 = start.X / a;
+            line.Y1 = start.Y / a - 130;
+            line.X2 = (start.X + Vres.X) / a;
+            line.Y2 = (start.Y + Vres.Y) / a - 130;
+            line.Stroke = System.Windows.Media.Brushes.OrangeRed;
+            GridField.Children.Add(line);
+
+            ForceLinesPaint(new Point(start.X + Vres.X, start.Y + Vres.Y), MaxCount);
+        }
+    
     }
+
+
 
     public abstract class ChargeObject
     {
@@ -238,7 +335,6 @@ namespace Линии
     }
     public class PointCharge : ChargeObject
     {
-
         public PointCharge(Point position, double charge) : base(position, charge)
         {
             base.Position = position;
@@ -252,5 +348,4 @@ namespace Линии
             return Charge * k / (r * r);
         }
     }
-
 }

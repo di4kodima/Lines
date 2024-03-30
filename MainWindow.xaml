@@ -19,14 +19,14 @@
         <Label  Grid.Row="0" Content="Диапазон:" HorizontalAlignment="Left" Margin="475,31,0,0" VerticalAlignment="Top"/>
         <TextBox x:Name="TbxEps"  Grid.Row="0" HorizontalAlignment="Left" Margin="325,36,0,0" TextWrapping="Wrap" Text="10" VerticalAlignment="Top" Width="120"/>
         <TextBox x:Name="TbxLInesCount"  Grid.Row="0" HorizontalAlignment="Left" Margin="965,12,0,0" TextWrapping="Wrap" Text="10" VerticalAlignment="Top" Width="120"/>
-        <TextBox x:Name="TbxLInesCount_Копировать" HorizontalAlignment="Left" Margin="965,44,0,0" TextWrapping="Wrap" Text="10" VerticalAlignment="Top" Width="120"/>
+        <TextBox x:Name="TbxForceLInesCount" HorizontalAlignment="Left" Margin="965,44,0,0" TextWrapping="Wrap" Text="10" VerticalAlignment="Top" Width="120"/>
         <Label Content="Заряд" HorizontalAlignment="Left" Margin="37,90,0,0" VerticalAlignment="Top"/>
-        <Label Content="Кол-во линий поля" HorizontalAlignment="Left" Margin="844,8,0,0" VerticalAlignment="Top"/>
-        <Label x:Name="Шаг_между_линиями" Content="Шаг между линиями" HorizontalAlignment="Left" Margin="844,39,0,0" VerticalAlignment="Top"/>
+        <Label Content="Кол-во линий поля" HorizontalAlignment="Left" Margin="835,8,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="Кол_во_силовых_линий" Content="Кол_во_силовых_линий" HorizontalAlignment="Left" Margin="835,40,0,0" VerticalAlignment="Top"/>
         <Label x:Name="Размер_растра" Content="Размер растра" HorizontalAlignment="Left" Margin="204,31,0,0" VerticalAlignment="Top"/>
         <Button x:Name="BtnReMoveLast" Click="BtnReMoveLast_Click" Content="Удалить последний" HorizontalAlignment="Left" Margin="1090,39,0,0" VerticalAlignment="Top"/>
-        <Button Content="Button" HorizontalAlignment="Left" Margin="1132,115,0,0" VerticalAlignment="Top"/>
-        <Button Content="Button" HorizontalAlignment="Left" Margin="1132,90,0,0" VerticalAlignment="Top"/>
+        <Button Content="Button" HorizontalAlignment="Left" Margin="1005,90,0,0" VerticalAlignment="Top"/>
+        <Button x:Name="BtnForceLines" Click="BtnForceLines_Click" Content="Линии отрисовать" HorizontalAlignment="Left" Margin="1090,90,0,0" VerticalAlignment="Top" Width="111"/>
         <Button x:Name="TbnClear" Click="TbnClear_Click" Content="Очистить" HorizontalAlignment="Left" Margin="1090,64,0,0" VerticalAlignment="Top" Width="111"/>
         <Label  Grid.Row="0" Content="до:" HorizontalAlignment="Left" Margin="666,32,0,0" VerticalAlignment="Top"/>
         <TextBox x:Name="TbxMinFieldValue" HorizontalAlignment="Left" Margin="541,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" Text="10000000"/>
