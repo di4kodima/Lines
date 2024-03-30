@@ -1,17 +1,7 @@
-﻿using System;
-using System.Reflection;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
+﻿using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
-using System.Linq;
 
 namespace Линии
 {
@@ -33,6 +23,28 @@ namespace Линии
             CbxObjectType.ItemsSource = Enum.GetValues(typeof(Objects));
             CurBrush = (Objects)CbxObjectType.SelectedItem;
 
+        }
+
+        void printLine(Vector pointFrom, Vector pointTo, Brush color, float scale=1)
+        {
+            Line line = new Line();
+            (line.X1, line.Y1) = (pointFrom.X, pointFrom.Y-130);
+            (line.X2, line.Y2) = (pointTo.X, pointTo.Y-130);
+            line.Stroke = color;
+
+            GridField.Children.Add(line);
+        }
+
+        void printEclipse(Vector position, int Width, Brush color)
+        {
+            Ellipse p = new();
+            p.RenderTransform = new TranslateTransform { X = position.X - 600, Y = position.Y - 400 };
+            p.Margin = new();
+            p.StrokeThickness = 1;
+            p.Height = p.Width = Width;
+            p.Fill = color;
+
+            GridField.Children.Add(p);
         }
 
         void Rastr(double x, double y, double h, double val)
@@ -61,14 +73,7 @@ namespace Линии
             }
             if (points.Count == 2)
             {
-                Line line = new Line();
-                double a = 1;
-                line.X1 = points[0].X /a;
-                line.Y1 = points[0].Y /a - 130;
-                line.X2 = points[1].X /a;
-                line.Y2 = points[1].Y /a - 130;
-                line.Stroke = System.Windows.Media.Brushes.LightSteelBlue;
-                GridField.Children.Add(line);
+                printLine(new Vector(points[0].X, points[0].Y), new Vector(points[1].X, points[1].Y), Brushes.LightSteelBlue);
             }
         }
         
@@ -119,7 +124,10 @@ namespace Линии
                 MessageBox.Show("ПКМ");
                 double value = func(mouse.X, mouse.Y);
                 if (!double.TryParse(TbxEps.Text, out double h))
+                {
+                    showError("Неверно задан размер растра!");
                     return;
+                }
                 Rastr(mouse.X, mouse.Y, h, value);
             }
             if (e.LeftButton != MouseButtonState.Pressed)
@@ -132,18 +140,14 @@ namespace Линии
                 case Objects.point:
                     particls.Add(new PointCharge(mouse, charge));
                     Charges.Add(new PointCharge(mouse, charge));
-                    Ellipse a = new();
-                    a.RenderTransform = new TranslateTransform { X = mouse.X - 600, Y = mouse.Y - 400};
-                    a.Margin = new();
-                    a.StrokeThickness = 0.5;
-                    a.Height = 10;
-                    a.Width = 10;
 
-                    if(charge > 0) { a.Fill = Brushes.Red; }
-                    else a.Fill = Brushes.Blue;
+                    Brush EclipseColor;
+                    
+                    EclipseColor = Brushes.Blue;
+                    if (charge > 0) { EclipseColor = Brushes.Red; }
 
-                    GridField.Children.Add(a);
-                        break;
+                    printEclipse(new Vector(mouse.X, mouse.Y), 10, EclipseColor);
+                    break;
             }
         }
 
@@ -159,7 +163,7 @@ namespace Линии
             {
                 if (element is Line)
                 {
-                    LinesToRemove.Add(element as Line);
+                    LinesToRemove.Add(element);
                 }
             }
 
@@ -172,21 +176,29 @@ namespace Линии
             List<double> values = new();
 
             if (!double.TryParse(TbxMinFieldValue.Text, out double MinField))
+            {
+                showError("Неверно задано начало диапазона!");
                 return;
+            }
 
             if (!double.TryParse(TbxMaxFieldValue.Text, out double MaxField))
+            {
+                showError("Неверно задан конец диапазона!");
                 return;
+            }
 
             if (!double.TryParse(TbxLInesCount.Text, out double LinesCount))
-                return;
-
-            for (int i = 0; i < LinesCount; i++ )// (MaxField / LinesCount))
             {
-                //MessageBox.Show($"{i}");
+                showError("Неверно задано количество линий поля!");
+                return;
+            }
+            for (int i = 0; i < LinesCount; i++ )
+            {
                 values.Add(MaxField / LinesCount * i);
             }
             if(!double.TryParse(TbxEps.Text,out double h))
             {
+                showError("Неверно задан размер растра!");
                 return;
             }
 
@@ -212,7 +224,7 @@ namespace Линии
             foreach (var val in GridField.Children)
             {
                 if (val is Ellipse)
-                    asd.Add(val as Ellipse);
+                    asd.Add((Ellipse)val);
             }
             GridField.Children.Remove(asd[asd.Count - 1]);
         }
@@ -223,29 +235,19 @@ namespace Линии
             GridField.Children.Clear();
         }
 
-        private void BtnForceLines_Click(object sender, RoutedEventArgs e)
+        private void showError(string message, string title = "Error")
         {
-            /*
-            List<UIElement> LinesToRemove = new List<UIElement>();
+            MessageBox.Show(message, title);
+            return;
+        }
 
-            //Ещем все объекты, которые линии
-            foreach (UIElement element in GridField.Children)
+        private void button_forceLines__Click(object sender, RoutedEventArgs e)
+        {
+            if (!int.TryParse(input_ForceLinesCount.Text, out int LinesCount))
             {
-                if (element is Line)
-                {
-                    LinesToRemove.Add(element as Line);
-                }
-            }
-
-            //Удаляем прошлые линии
-            foreach (UIElement Line in LinesToRemove)
-            {
-                GridField.Children.Remove(Line);
-            }
-            */
-
-            if (!int.TryParse(TbxForceLInesCount.Text, out int LinesCount))
+                showError("Неверно указано число силовых линий!");
                 return;
+            }
 
             float r = 20f; // Хард код
             IEnumerable<ChargeObject> PosCharges = Charges.Where(point => point.Charge > 0);
@@ -254,20 +256,12 @@ namespace Линии
             {
                 for(float a = 0; a < Math.PI * 2; a += (float)Math.PI * 2 / LinesCount)
                 {
-                    Point point = new(PosCharge.Position.X + Math.Cos(a) * r,PosCharge.Position.Y + Math.Sin(a) * r);
+                    Point point = new(PosCharge.Position.X + Math.Cos(a) * r, PosCharge.Position.Y + Math.Sin(a) * r);
 
+                    printEclipse(new Vector(point.X, point.Y), 2, Brushes.Orange);
                     Ellipse p = new();
-                    p.RenderTransform = new TranslateTransform { X = point.X -600, Y = point.Y - 400};
-                    p.Margin = new();
-                    p.StrokeThickness = 0.5;
-                    p.Height = 2;
-                    p.Width = 2;
-                    p.Fill = Brushes.Orange;
-
-                    GridField.Children.Add(p);
 
                     ForceLinesPaint(point);
-
                 }
             }
         }
@@ -294,7 +288,6 @@ namespace Линии
                 };
 
                 v.Normalize();
-                //v *= Math.Abs(Charge.GetField(start.X, start.Y));
                 v *= Charge.GetField(start.X, start.Y);
 
                 Vres += v;
@@ -303,18 +296,9 @@ namespace Линии
             Vres.Normalize();
             Vres *= h;
 
-            Line line = new Line();
-            double a = 1;
-            line.X1 = start.X / a;
-            line.Y1 = start.Y / a - 130;
-            line.X2 = (start.X + Vres.X) / a;
-            line.Y2 = (start.Y + Vres.Y) / a - 130;
-            line.Stroke = System.Windows.Media.Brushes.OrangeRed;
-            GridField.Children.Add(line);
-
+            printLine(new Vector(start.X, start.Y), new Vector(start.X + Vres.X, start.Y + Vres.Y), Brushes.OrangeRed);
             ForceLinesPaint(new Point(start.X + Vres.X, start.Y + Vres.Y), MaxCount);
         }
-    
     }
 
 
