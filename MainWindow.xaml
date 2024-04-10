@@ -12,8 +12,7 @@
             <RowDefinition Height="130"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Grid x:Name="GridField" Grid.Row="1" Grid.Column="0" MouseLeftButtonDown="GridField_MouseDown" Background="Beige">
-        </Grid>
+        <Grid x:Name="GridField" Grid.Row="1" Grid.Column="0" MouseLeftButtonDown="GridField_MouseDown" MouseLeftButtonUp="GridField_MouseUp" Background="Beige" MouseMove="Move_point"/>
         <ComboBox x:Name="CbxObjectType" Grid.Row="0" HorizontalAlignment="Left" Margin="37,30,0,0" VerticalAlignment="Top" Width="120" SelectedIndex="0"/>
         <TextBox x:Name="TbxCharge"  Grid.Row="0" HorizontalAlignment="Left" Margin="325,74,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="120"/>
         <Button Content="Запуск"  Grid.Row="0" HorizontalAlignment="Left" Margin="1090,10,0,0"  VerticalAlignment="Top" Width="111" Click="Button_Click"/>

@@ -2,6 +2,10 @@
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using System.Linq;
+using System.Windows.Documents;
+using System.Collections;
+using System.Windows.Controls;
 
 namespace Линии
 {
@@ -13,11 +17,16 @@ namespace Линии
 
     public partial class MainWindow : Window
     {
+<<<<<<< HEAD
         double WindowHeight;
         double WindowWeight;
+=======
+        private bool isMouseDown = false;
+        Ellipse? targetEllipse = null;
+        List<Ellipse> ellipses = new List<Ellipse>();
+>>>>>>> fe3bfef7314eb5dbd5e6c52f0f5adfa3ac1a54a7
 
         Objects CurBrush;
-        List<Object> particls = new();
         List<ChargeObject> Charges = new();
         public MainWindow()
         {
@@ -29,8 +38,8 @@ namespace Линии
         void printLine(Vector pointFrom, Vector pointTo, Brush color, float scale=1)
         {
             Line line = new Line();
-            (line.X1, line.Y1) = (pointFrom.X, pointFrom.Y-130);
-            (line.X2, line.Y2) = (pointTo.X, pointTo.Y-130);
+            (line.X1, line.Y1) = (pointFrom.X, pointFrom.Y - 130);
+            (line.X2, line.Y2) = (pointTo.X, pointTo.Y - 130);
             line.Stroke = color;
 
             GridField.Children.Add(line);
@@ -39,13 +48,14 @@ namespace Линии
         void printEclipse(Vector position, int Width, Brush color)
         {
             Ellipse p = new();
-            p.RenderTransform = new TranslateTransform { X = position.X - 600, Y = position.Y - 400 };
+            p.RenderTransform = new TranslateTransform { X = position.X - 600, Y = position.Y - 400};
             p.Margin = new();
             p.StrokeThickness = 1;
             p.Height = p.Width = Width;
             p.Fill = color;
 
             GridField.Children.Add(p);
+            ellipses.Add(p);
         }
 
         void Rastr(double x, double y, double h, double val)
@@ -118,6 +128,10 @@ namespace Линии
 
         private void GridField_MouseDown(object sender, MouseButtonEventArgs e)
         {
+            isMouseDown = true;
+
+            if (!(getEllipseFromMouse() is null)) return;
+
             Point mouse = e.GetPosition((IInputElement)this);
 
             if (e.RightButton == MouseButtonState.Pressed)
@@ -139,17 +153,38 @@ namespace Линии
             switch (CurBrush)
             {
                 case Objects.point:
-                    particls.Add(new PointCharge(mouse, charge));
                     Charges.Add(new PointCharge(mouse, charge));
 
                     Brush EclipseColor;
-                    
+
                     EclipseColor = Brushes.Blue;
                     if (charge > 0) { EclipseColor = Brushes.Red; }
 
                     printEclipse(new Vector(mouse.X, mouse.Y + 5), 10, EclipseColor);
                     break;
             }
+        }
+
+        Ellipse? getEllipseFromMouse()
+        {
+            if (ellipses.Count <= 0) return null;
+
+            foreach (Ellipse ellipse in ellipses)
+            {
+                //MessageBox.Show(ellipses.Count.ToString());
+                //if (ellipse.RenderedGeometry.FillContains(mousePos, 300, ToleranceType.Relative))
+                if (ellipse.IsMouseOver)
+                {
+                    return ellipse;
+                }
+            }
+            return null;
+        }
+
+        private void GridField_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            isMouseDown = false;
+            targetEllipse = null;
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -203,16 +238,17 @@ namespace Линии
                 return;
             }
 
-            for (double i = 0; i < 1200/h; i++)
-                for (double j = 0; j < 800/h; j++)
+            for (double i = 0; i < 1200 / h; i++)
+            {
+                for (double j = 0; j < 800 / h; j++)
                 {
                     foreach (var val in values)
                     {
                         Rastr(0 + h * i, 0 + h * j, h, val);
-
                         Rastr(0 + h * i, 0 + h * j, h, -val);
                     }
                 }
+            }
         }
 
         private void BtnReMoveLast_Click(object sender, RoutedEventArgs e)
@@ -338,6 +374,29 @@ namespace Линии
         {
             WindowHeight = e.NewSize.Height;
             WindowWeight = e.NewSize.Width;
+        }
+
+        private void Move_point(object sender, MouseEventArgs e)
+        {
+            if (!isMouseDown || ellipses.Count <= 0) return;
+            var mousePos = e.GetPosition(GridField);
+            mousePos.X -= 600;
+            mousePos.Y -= 265;
+
+            if (targetEllipse is null) targetEllipse = getEllipseFromMouse();
+            if (targetEllipse is null) return;
+            //Point targetEllipse__position = targetEllipse.RenderTransform.Transform(new Point());
+            //targetEllipse__position.X += 600;
+            //targetEllipse__position.Y += 400;
+            //ChargeObject? sameInCharges = Charges.FirstOrDefault(charge => charge.Position == targetEllipse__position);
+            //if (sameInCharges is null) return;
+            ChargeObject sameInCharges = Charges[ellipses.IndexOf(targetEllipse)];
+            targetEllipse.RenderTransform = new TranslateTransform {X = mousePos.X, Y = mousePos.Y};
+            sameInCharges.Position = new Point() { X = mousePos.X + 600, Y = mousePos.Y + 265+130 };
+
+
+
+            button_forceLines.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
         }
     }
 
