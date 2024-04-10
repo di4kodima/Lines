@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Линии"
         mc:Ignorable="d"
+        SizeChanged="Window_SizeChanged"
         Title="MainWindow" Height="698" Width="1214">
     <Grid x:Name="Main">
         <Grid.RowDefinitions>
@@ -14,13 +15,13 @@
         <Grid x:Name="GridField" Grid.Row="1" Grid.Column="0" MouseLeftButtonDown="GridField_MouseDown" Background="Beige">
         </Grid>
         <ComboBox x:Name="CbxObjectType" Grid.Row="0" HorizontalAlignment="Left" Margin="37,30,0,0" VerticalAlignment="Top" Width="120" SelectedIndex="0"/>
-        <TextBox x:Name="TbxCharge"  Grid.Row="0" HorizontalAlignment="Left" Margin="84,94,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="120"/>
+        <TextBox x:Name="TbxCharge"  Grid.Row="0" HorizontalAlignment="Left" Margin="325,74,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="120"/>
         <Button Content="Запуск"  Grid.Row="0" HorizontalAlignment="Left" Margin="1090,10,0,0"  VerticalAlignment="Top" Width="111" Click="Button_Click"/>
         <Label  Grid.Row="0" Content="Диапазон:" HorizontalAlignment="Left" Margin="475,31,0,0" VerticalAlignment="Top"/>
         <TextBox x:Name="TbxEps"  Grid.Row="0" HorizontalAlignment="Left" Margin="325,36,0,0" TextWrapping="Wrap" Text="10" VerticalAlignment="Top" Width="120"/>
         <TextBox x:Name="TbxLInesCount"  Grid.Row="0" HorizontalAlignment="Left" Margin="965,12,0,0" TextWrapping="Wrap" Text="10" VerticalAlignment="Top" Width="120"/>
         <TextBox x:Name="input_ForceLinesCount" HorizontalAlignment="Left" Margin="965,44,0,0" TextWrapping="Wrap" Text="10" VerticalAlignment="Top" Width="120"/>
-        <Label Content="Заряд" HorizontalAlignment="Left" Margin="37,90,0,0" VerticalAlignment="Top"/>
+        <Label Content="Заряд" HorizontalAlignment="Left" Margin="204,70,0,0" VerticalAlignment="Top"/>
         <Label Content="Кол-во линий поля" HorizontalAlignment="Left" Margin="835,8,0,0" VerticalAlignment="Top"/>
         <Label x:Name="Кол_во_силовых_линий" Content="Кол_во_силовых_линий" HorizontalAlignment="Left" Margin="835,40,0,0" VerticalAlignment="Top"/>
         <Label x:Name="Размер_растра" Content="Размер растра" HorizontalAlignment="Left" Margin="204,31,0,0" VerticalAlignment="Top"/>
@@ -30,5 +31,7 @@
         <Label  Grid.Row="0" Content="до:" HorizontalAlignment="Left" Margin="666,32,0,0" VerticalAlignment="Top"/>
         <TextBox x:Name="TbxMinFieldValue" HorizontalAlignment="Left" Margin="541,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" Text="10000000"/>
         <TextBox x:Name="TbxMaxFieldValue" HorizontalAlignment="Left" Margin="697,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" Text="200000000"/>
+        <Label Content="Шаг силовых линий" HorizontalAlignment="Left" Margin="475,70,0,0" VerticalAlignment="Top" Width="126"/>
+        <TextBox x:Name="TbxForceLinesStep" HorizontalAlignment="Left" Margin="592,74,0,0" TextWrapping="Wrap" Text="5" VerticalAlignment="Top" Width="69"/>
     </Grid>
 </Window>

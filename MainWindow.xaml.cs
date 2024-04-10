@@ -13,7 +13,9 @@ namespace Линии
 
     public partial class MainWindow : Window
     {
-        
+        double WindowHeight;
+        double WindowWeight;
+
         Objects CurBrush;
         List<Object> particls = new();
         List<ChargeObject> Charges = new();
@@ -22,7 +24,6 @@ namespace Линии
             InitializeComponent();
             CbxObjectType.ItemsSource = Enum.GetValues(typeof(Objects));
             CurBrush = (Objects)CbxObjectType.SelectedItem;
-
         }
 
         void printLine(Vector pointFrom, Vector pointTo, Brush color, float scale=1)
@@ -146,7 +147,7 @@ namespace Линии
                     EclipseColor = Brushes.Blue;
                     if (charge > 0) { EclipseColor = Brushes.Red; }
 
-                    printEclipse(new Vector(mouse.X, mouse.Y), 10, EclipseColor);
+                    printEclipse(new Vector(mouse.X, mouse.Y + 5), 10, EclipseColor);
                     break;
             }
         }
@@ -161,7 +162,7 @@ namespace Линии
             //Ещем все объекты, которые линии
             foreach (UIElement element in GridField.Children)
             {
-                if (element is Line)
+                if (element is Line && ((Line)element).Stroke == Brushes.LightSteelBlue)
                 {
                     LinesToRemove.Add(element);
                 }
@@ -192,9 +193,9 @@ namespace Линии
                 showError("Неверно задано количество линий поля!");
                 return;
             }
-            for (int i = 0; i < LinesCount; i++ )
+            for (int i = 1; i < LinesCount + 1; i++ )
             {
-                values.Add(MaxField / LinesCount * i);
+                values.Add((MaxField - MinField) / LinesCount * i);
             }
             if(!double.TryParse(TbxEps.Text,out double h))
             {
@@ -235,7 +236,7 @@ namespace Линии
             GridField.Children.Clear();
         }
 
-        private void showError(string message, string title = "Error")
+        private void ShowError(string message, string title = "Error")
         {
             MessageBox.Show(message, title);
             return;
@@ -243,13 +244,36 @@ namespace Линии
 
         private void button_forceLines__Click(object sender, RoutedEventArgs e)
         {
+            //Мусорка для старых линий
+            List<UIElement> LinesToRemove = new List<UIElement>();
+
+            //Ещем все объекты, которые линии
+            foreach (UIElement element in GridField.Children)
+            {
+                if (element is Line && ((Line)element).Stroke == Brushes.Orange)
+                {
+                    LinesToRemove.Add(element);
+                }
+            }
+
+            foreach (var L in LinesToRemove) 
+            { 
+                GridField.Children.Remove(L);
+            }
+
             if (!int.TryParse(input_ForceLinesCount.Text, out int LinesCount))
             {
                 showError("Неверно указано число силовых линий!");
                 return;
             }
 
-            float r = 20f; // Хард код
+            if(!double.TryParse(TbxForceLinesStep.Text, out double h))
+            {
+                showError("Неверно указан силовых линий!");
+                return;
+            }
+
+            double r = 1;
             IEnumerable<ChargeObject> PosCharges = Charges.Where(point => point.Charge > 0);
 
             foreach (ChargeObject PosCharge in PosCharges) 
@@ -258,24 +282,22 @@ namespace Линии
                 {
                     Point point = new(PosCharge.Position.X + Math.Cos(a) * r, PosCharge.Position.Y + Math.Sin(a) * r);
 
-                    printEclipse(new Vector(point.X, point.Y), 2, Brushes.Orange);
-                    Ellipse p = new();
+                    //printEclipse(new Vector(point.X, point.Y), 2, Brushes.Orange);
 
-                    ForceLinesPaint(point);
+                    ForceLinesPaint(point, h);
                 }
             }
         }
         
-        void ForceLinesPaint(Point start, int MaxCount = 1000)
+        void ForceLinesPaint(Point start,double h , int IterCount = 1000)
         {
-            MaxCount--;
-            if(MaxCount <= 0) { return; }
-
             Vector Vres = new();
 
-            Double h = 5;
-            if (start.X > 2000 || start.X < 0 || start.Y > 1000 || start.Y < 0)
-                h = 100;
+            IterCount--;
+            if(IterCount <= 0 ) 
+            {
+                return;
+            }
 
             foreach (ChargeObject Charge in Charges) 
             { 
@@ -293,15 +315,31 @@ namespace Линии
                 Vres += v;
             }
 
-            Vres.Normalize();
-            Vres *= h;
+            double a = h;
 
-            printLine(new Vector(start.X, start.Y), new Vector(start.X + Vres.X, start.Y + Vres.Y), Brushes.OrangeRed);
-            ForceLinesPaint(new Point(start.X + Vres.X, start.Y + Vres.Y), MaxCount);
+            Vres.Normalize();
+            if (start.X > WindowWeight + h || start.X + h < 0 || start.Y > WindowHeight + h|| start.Y < 0)
+                a = 100;
+            Vres *= a;
+
+            if (!(start.X > WindowWeight || start.X < 0 || start.Y > WindowHeight || start.Y < 0))
+                printLine(new Vector(start.X, start.Y), new Vector(start.X + Vres.X, start.Y + Vres.Y), Brushes.Orange);
+
+
+            ForceLinesPaint(new Point(start.X + Vres.X, start.Y + Vres.Y),h, IterCount);
+        }
+
+        public void showError(string message)
+        {
+            MessageBox.Show(message);
+        }
+
+        private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            WindowHeight = e.NewSize.Height;
+            WindowWeight = e.NewSize.Width;
         }
     }
-
-
 
     public abstract class ChargeObject
     {
@@ -316,6 +354,8 @@ namespace Линии
 
         public abstract double GetField(double x, double y);
     }
+
+
     public class PointCharge : ChargeObject
     {
         public PointCharge(Point position, double charge) : base(position, charge)

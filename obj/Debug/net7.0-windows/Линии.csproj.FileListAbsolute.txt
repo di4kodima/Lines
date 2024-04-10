@@ -18,3 +18,24 @@ D:\Рабочий стол\Папака для Ильи\Учеба\Комп. М�
 D:\Рабочий стол\Папака для Ильи\Учеба\Комп. Моделирование\Lines\obj\Debug\net7.0-windows\Линии.pdb
 D:\Рабочий стол\Папака для Ильи\Учеба\Комп. Моделирование\Lines\obj\Debug\net7.0-windows\Линии.genruntimeconfig.cache
 D:\Рабочий стол\Папака для Ильи\Учеба\Комп. Моделирование\Lines\obj\Debug\net7.0-windows\ref\Линии.dll
+C:\Users\Дмитрий\Desktop\Учеба 2 курс\2 семестр\КМК\Линии\bin\Debug\net7.0-windows\Линии.exe
+C:\Users\Дмитрий\Desktop\Учеба 2 курс\2 семестр\КМК\Линии\bin\Debug\net7.0-windows\Линии.deps.json
+C:\Users\Дмитрий\Desktop\Учеба 2 курс\2 семестр\КМК\Линии\bin\Debug\net7.0-windows\Линии.runtimeconfig.json
+C:\Users\Дмитрий\Desktop\Учеба 2 курс\2 семестр\КМК\Линии\bin\Debug\net7.0-windows\Линии.dll
+C:\Users\Дмитрий\Desktop\Учеба 2 курс\2 семестр\КМК\Линии\bin\Debug\net7.0-windows\Линии.pdb
+C:\Users\Дмитрий\Desktop\Учеба 2 курс\2 семестр\КМК\Линии\obj\Debug\net7.0-windows\MainWindow.g.cs
+C:\Users\Дмитрий\Desktop\Учеба 2 курс\2 семестр\КМК\Линии\obj\Debug\net7.0-windows\App.g.cs
+C:\Users\Дмитрий\Desktop\Учеба 2 курс\2 семестр\КМК\Линии\obj\Debug\net7.0-windows\Линии_MarkupCompile.cache
+C:\Users\Дмитрий\Desktop\Учеба 2 курс\2 семестр\КМК\Линии\obj\Debug\net7.0-windows\Линии_MarkupCompile.lref
+C:\Users\Дмитрий\Desktop\Учеба 2 курс\2 семестр\КМК\Линии\obj\Debug\net7.0-windows\MainWindow.baml
+C:\Users\Дмитрий\Desktop\Учеба 2 курс\2 семестр\КМК\Линии\obj\Debug\net7.0-windows\Линии.g.resources
+C:\Users\Дмитрий\Desktop\Учеба 2 курс\2 семестр\КМК\Линии\obj\Debug\net7.0-windows\Линии.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Дмитрий\Desktop\Учеба 2 курс\2 семестр\КМК\Линии\obj\Debug\net7.0-windows\Линии.AssemblyInfoInputs.cache
+C:\Users\Дмитрий\Desktop\Учеба 2 курс\2 семестр\КМК\Линии\obj\Debug\net7.0-windows\Линии.AssemblyInfo.cs
+C:\Users\Дмитрий\Desktop\Учеба 2 курс\2 семестр\КМК\Линии\obj\Debug\net7.0-windows\Линии.csproj.CoreCompileInputs.cache
+C:\Users\Дмитрий\Desktop\Учеба 2 курс\2 семестр\КМК\Линии\obj\Debug\net7.0-windows\Линии.sourcelink.json
+C:\Users\Дмитрий\Desktop\Учеба 2 курс\2 семестр\КМК\Линии\obj\Debug\net7.0-windows\Линии.dll
+C:\Users\Дмитрий\Desktop\Учеба 2 курс\2 семестр\КМК\Линии\obj\Debug\net7.0-windows\refint\Линии.dll
+C:\Users\Дмитрий\Desktop\Учеба 2 курс\2 семестр\КМК\Линии\obj\Debug\net7.0-windows\Линии.pdb
+C:\Users\Дмитрий\Desktop\Учеба 2 курс\2 семестр\КМК\Линии\obj\Debug\net7.0-windows\Линии.genruntimeconfig.cache
+C:\Users\Дмитрий\Desktop\Учеба 2 курс\2 семестр\КМК\Линии\obj\Debug\net7.0-windows\ref\Линии.dll
