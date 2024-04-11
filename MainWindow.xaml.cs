@@ -17,14 +17,12 @@ namespace Линии
 
     public partial class MainWindow : Window
     {
-<<<<<<< HEAD
         double WindowHeight;
         double WindowWeight;
-=======
+
         private bool isMouseDown = false;
         Ellipse? targetEllipse = null;
         List<Ellipse> ellipses = new List<Ellipse>();
->>>>>>> fe3bfef7314eb5dbd5e6c52f0f5adfa3ac1a54a7
 
         Objects CurBrush;
         List<ChargeObject> Charges = new();
@@ -121,11 +119,6 @@ namespace Линии
             return Field;
         }
 
-        double _func(double x, double y)
-        {
-            return x - 2 * y;
-        }
-
         private void GridField_MouseDown(object sender, MouseButtonEventArgs e)
         {
             isMouseDown = true;
@@ -170,14 +163,9 @@ namespace Линии
             if (ellipses.Count <= 0) return null;
 
             foreach (Ellipse ellipse in ellipses)
-            {
-                //MessageBox.Show(ellipses.Count.ToString());
-                //if (ellipse.RenderedGeometry.FillContains(mousePos, 300, ToleranceType.Relative))
                 if (ellipse.IsMouseOver)
-                {
                     return ellipse;
-                }
-            }
+
             return null;
         }
 
@@ -191,7 +179,7 @@ namespace Линии
         {
             if (Charges.Count == 0) return;
 
-            //Мусорка для старых линий
+
             List<UIElement> LinesToRemove = new List<UIElement>();
 
             //Ещем все объекты, которые линии
@@ -203,11 +191,12 @@ namespace Линии
                 }
             }
 
-            //Удаляем прошлые линии
-            foreach (UIElement Line in LinesToRemove)
+            foreach (var L in LinesToRemove)
             {
-                GridField.Children.Remove(Line);
+                GridField.Children.Remove(L);
             }
+
+            FieldDelLinesFromGrid(GridField);
 
             List<double> values = new();
 
@@ -256,6 +245,9 @@ namespace Линии
             if(Charges.Count == 0) return;
 
             Charges.RemoveAt(Charges.Count - 1);
+            ellipses.RemoveAt(ellipses.Count - 1);
+
+            targetEllipse = null;
 
             List<UIElement> asd = new List<UIElement>();
             foreach (var val in GridField.Children)
@@ -263,12 +255,15 @@ namespace Линии
                 if (val is Ellipse)
                     asd.Add((Ellipse)val);
             }
+
             GridField.Children.Remove(asd[asd.Count - 1]);
         }
 
         private void TbnClear_Click(object sender, RoutedEventArgs e)
         {
             Charges.Clear();
+            ellipses.Clear();
+            targetEllipse = null;
             GridField.Children.Clear();
         }
 
@@ -278,6 +273,12 @@ namespace Линии
             return;
         }
 
+        private void FieldDelLinesFromGrid(Grid grid)
+        {
+            grid.Children.Clear();
+            foreach(Ellipse el in ellipses)
+                grid.Children.Add(el);
+        }
         private void button_forceLines__Click(object sender, RoutedEventArgs e)
         {
             //Мусорка для старых линий
@@ -385,17 +386,13 @@ namespace Линии
 
             if (targetEllipse is null) targetEllipse = getEllipseFromMouse();
             if (targetEllipse is null) return;
-            //Point targetEllipse__position = targetEllipse.RenderTransform.Transform(new Point());
-            //targetEllipse__position.X += 600;
-            //targetEllipse__position.Y += 400;
-            //ChargeObject? sameInCharges = Charges.FirstOrDefault(charge => charge.Position == targetEllipse__position);
-            //if (sameInCharges is null) return;
+
             ChargeObject sameInCharges = Charges[ellipses.IndexOf(targetEllipse)];
             targetEllipse.RenderTransform = new TranslateTransform {X = mousePos.X, Y = mousePos.Y};
             sameInCharges.Position = new Point() { X = mousePos.X + 600, Y = mousePos.Y + 265+130 };
 
 
-
+            BtnStart.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
             button_forceLines.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
         }
     }
