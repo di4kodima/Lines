@@ -32,12 +32,14 @@ namespace Линии
         private bool isForceLines { get { return IsForceLines; } set {
                 IsForceLines = value;
                 updatePopUpButtons();
+                return;
             }
         }
         private bool isEquipotentials { get { return IsEquipotentials; }
             set {
                 IsEquipotentials = value;
                 updatePopUpButtons();
+                return;
             }
         }
 
@@ -97,7 +99,6 @@ namespace Линии
             }
             if (points.Count == 2)
             {
-                isEquipotentials = true;
                 printLine(new Vector(points[0].X, points[0].Y), new Vector(points[1].X, points[1].Y), Brushes.LightSteelBlue);
             }
         }
@@ -262,7 +263,7 @@ namespace Линии
                 ShowError("Неверно задан размер растра!");
                 return;
             }
-            
+            isEquipotentials = true;
             for (double i = 0; i < 1200 / h; i++)
             {
                 for (double j = 0; j < 800 / h; j++)
@@ -453,8 +454,7 @@ namespace Линии
             }
 
             buttons_popUpHandler(buttonText);
-            button.Visibility = Visibility.Hidden;
-            button.IsEnabled = false;
+            updatePopUpButtons();
         }
 
         private void button_popUp2_Click(object sender, RoutedEventArgs e)
@@ -469,12 +469,12 @@ namespace Линии
             }
 
             buttons_popUpHandler(buttonText);
-            button.Visibility = Visibility.Hidden;
-            button.IsEnabled = false;
+            updatePopUpButtons();
         }
 
         void updatePopUpButtons()
         {
+            
             if (!isEquipotentials && !isForceLines)
             {
                 button_popUp1.Visibility = Visibility.Hidden;
