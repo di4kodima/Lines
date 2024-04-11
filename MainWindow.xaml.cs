@@ -6,34 +6,57 @@ using System.Linq;
 using System.Windows.Documents;
 using System.Collections;
 using System.Windows.Controls;
+using Линии;
+using System.Windows.Media.Animation;
 
 namespace Линии
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    /// 
+    ///
     public enum Objects { point, line }
 
     public partial class MainWindow : Window
     {
+<<<<<<< HEAD
         double WindowHeight;
         double WindowWeight;
+=======
+        public double WindowHeight;
+        public double WindowWeight;
+>>>>>>> 8351067ae847de452a545575a388f8169efa3f65
 
         private bool isMouseDown = false;
         Ellipse? targetEllipse = null;
         List<Ellipse> ellipses = new List<Ellipse>();
+<<<<<<< HEAD
+=======
+
+        private bool IsForceLines = false;
+        private bool IsEquipotentials = false;
+
+        private bool isForceLines { get { return IsForceLines; } set {
+                IsForceLines = value;
+                updatePopUpButtons();
+            }
+        }
+        private bool isEquipotentials { get { return IsEquipotentials; }
+            set {
+                IsEquipotentials = value;
+                updatePopUpButtons();
+            }
+        }
+>>>>>>> 8351067ae847de452a545575a388f8169efa3f65
 
         Objects CurBrush;
-        List<ChargeObject> Charges = new();
+        protected List<ChargeObject> Charges = new();
         public MainWindow()
         {
             InitializeComponent();
-            CbxObjectType.ItemsSource = Enum.GetValues(typeof(Objects));
-            CurBrush = (Objects)CbxObjectType.SelectedItem;
         }
 
-        void printLine(Vector pointFrom, Vector pointTo, Brush color, float scale=1)
+        protected void printLine(Vector pointFrom, Vector pointTo, Brush color, float scale=1)
         {
             Line line = new Line();
             (line.X1, line.Y1) = (pointFrom.X, pointFrom.Y - 130);
@@ -43,7 +66,7 @@ namespace Линии
             GridField.Children.Add(line);
         }
 
-        void printEclipse(Vector position, int Width, Brush color)
+        void printEllipse(Vector position, int Width, Brush color)
         {
             Ellipse p = new();
             p.RenderTransform = new TranslateTransform { X = position.X - 600, Y = position.Y - 400};
@@ -82,6 +105,7 @@ namespace Линии
             }
             if (points.Count == 2)
             {
+                isEquipotentials = true;
                 printLine(new Vector(points[0].X, points[0].Y), new Vector(points[1].X, points[1].Y), Brushes.LightSteelBlue);
             }
         }
@@ -125,6 +149,8 @@ namespace Линии
 
             if (!(getEllipseFromMouse() is null)) return;
 
+            isMouseDown = false;
+
             Point mouse = e.GetPosition((IInputElement)this);
 
             if (e.RightButton == MouseButtonState.Pressed)
@@ -133,7 +159,7 @@ namespace Линии
                 double value = func(mouse.X, mouse.Y);
                 if (!double.TryParse(TbxEps.Text, out double h))
                 {
-                    showError("Неверно задан размер растра!");
+                    ShowError("Неверно задан размер растра!");
                     return;
                 }
                 Rastr(mouse.X, mouse.Y, h, value);
@@ -143,6 +169,11 @@ namespace Линии
 
             if (!Double.TryParse(TbxCharge.Text, out double charge))
                 return;
+            if (charge == 0)
+            {
+                ShowError("Заряд не может быть равным нулю!");
+                return;
+            }
             switch (CurBrush)
             {
                 case Objects.point:
@@ -153,7 +184,8 @@ namespace Линии
                     EclipseColor = Brushes.Blue;
                     if (charge > 0) { EclipseColor = Brushes.Red; }
 
-                    printEclipse(new Vector(mouse.X, mouse.Y + 5), 10, EclipseColor);
+                    printEllipse(new Vector(mouse.X, mouse.Y + 5), 10, EclipseColor);
+                    updateScene();
                     break;
             }
         }
@@ -175,10 +207,30 @@ namespace Линии
             targetEllipse = null;
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void GridField_removeEllipse(object sender, MouseButtonEventArgs e)
+        {
+            int countOfCharges = Charges.Count();
+            if (countOfCharges == 0) return;
+
+            targetEllipse = getEllipseFromMouse();
+            if (targetEllipse is null) return;
+
+            if (countOfCharges == 1) TbnClear.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+
+            int indexOfellipse = ellipses.IndexOf(targetEllipse);
+            if (indexOfellipse == -1) return;
+            GridField.Children.Remove(targetEllipse);
+            Charges.RemoveAt(indexOfellipse);
+            ellipses.RemoveAt(indexOfellipse);
+            targetEllipse = null;
+            updateScene();
+        }
+
+        private void button_equipotentials__Click(object sender, RoutedEventArgs e)
         {
             if (Charges.Count == 0) return;
 
+<<<<<<< HEAD
 
             List<UIElement> LinesToRemove = new List<UIElement>();
 
@@ -195,6 +247,9 @@ namespace Линии
             {
                 GridField.Children.Remove(L);
             }
+=======
+            removeLines(Brushes.LightSteelBlue);
+>>>>>>> 8351067ae847de452a545575a388f8169efa3f65
 
             FieldDelLinesFromGrid(GridField);
 
@@ -202,19 +257,19 @@ namespace Линии
 
             if (!double.TryParse(TbxMinFieldValue.Text, out double MinField))
             {
-                showError("Неверно задано начало диапазона!");
+                ShowError("Неверно задано начало диапазона!");
                 return;
             }
 
             if (!double.TryParse(TbxMaxFieldValue.Text, out double MaxField))
             {
-                showError("Неверно задан конец диапазона!");
+                ShowError("Неверно задан конец диапазона!");
                 return;
             }
 
             if (!double.TryParse(TbxLInesCount.Text, out double LinesCount))
             {
-                showError("Неверно задано количество линий поля!");
+                ShowError("Неверно задано количество линий поля!");
                 return;
             }
             for (int i = 1; i < LinesCount + 1; i++ )
@@ -223,10 +278,10 @@ namespace Линии
             }
             if(!double.TryParse(TbxEps.Text,out double h))
             {
-                showError("Неверно задан размер растра!");
+                ShowError("Неверно задан размер растра!");
                 return;
             }
-
+            
             for (double i = 0; i < 1200 / h; i++)
             {
                 for (double j = 0; j < 800 / h; j++)
@@ -244,6 +299,7 @@ namespace Линии
         {
             if(Charges.Count == 0) return;
 
+<<<<<<< HEAD
             Charges.RemoveAt(Charges.Count - 1);
             ellipses.RemoveAt(ellipses.Count - 1);
 
@@ -257,6 +313,19 @@ namespace Линии
             }
 
             GridField.Children.Remove(asd[asd.Count - 1]);
+=======
+            int countOfCharges = Charges.Count();
+            if (countOfCharges == 0) return;
+            if (countOfCharges == 1) TbnClear.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+
+            int indexOfellipse = ellipses.Count-1;
+            if (indexOfellipse == -1) return;
+            GridField.Children.Remove(ellipses[indexOfellipse]);
+            Charges.RemoveAt(indexOfellipse);
+            ellipses.RemoveAt(indexOfellipse);
+
+            updateScene();
+>>>>>>> 8351067ae847de452a545575a388f8169efa3f65
         }
 
         private void TbnClear_Click(object sender, RoutedEventArgs e)
@@ -265,14 +334,13 @@ namespace Линии
             ellipses.Clear();
             targetEllipse = null;
             GridField.Children.Clear();
+            ellipses.Clear();
+            isForceLines = false;
+            isEquipotentials = false;
         }
 
-        private void ShowError(string message, string title = "Error")
-        {
-            MessageBox.Show(message, title);
-            return;
-        }
 
+<<<<<<< HEAD
         private void FieldDelLinesFromGrid(Grid grid)
         {
             grid.Children.Clear();
@@ -280,6 +348,9 @@ namespace Линии
                 grid.Children.Add(el);
         }
         private void button_forceLines__Click(object sender, RoutedEventArgs e)
+=======
+        void removeLines(Brush color)
+>>>>>>> 8351067ae847de452a545575a388f8169efa3f65
         {
             //Мусорка для старых линий
             List<UIElement> LinesToRemove = new List<UIElement>();
@@ -287,58 +358,69 @@ namespace Линии
             //Ещем все объекты, которые линии
             foreach (UIElement element in GridField.Children)
             {
-                if (element is Line && ((Line)element).Stroke == Brushes.Orange)
+                if (element is Line && ((Line)element).Stroke == color)
                 {
                     LinesToRemove.Add(element);
                 }
             }
 
-            foreach (var L in LinesToRemove) 
-            { 
+            foreach (var L in LinesToRemove)
+            {
                 GridField.Children.Remove(L);
             }
+        }
+
+        void button_forceLines__Click(object sender, RoutedEventArgs e)
+        {
+            if (Charges.Count == 0) return;
+
+            removeLines(Brushes.Orange);
 
             if (!int.TryParse(input_ForceLinesCount.Text, out int LinesCount))
             {
-                showError("Неверно указано число силовых линий!");
+                ShowError("Неверно указано число силовых линий!");
                 return;
             }
 
-            if(!double.TryParse(TbxForceLinesStep.Text, out double h))
+            if (!double.TryParse(TbxForceLinesStep.Text, out double h))
             {
-                showError("Неверно указан силовых линий!");
+                ShowError("Неверно указан силовых линий!");
                 return;
             }
 
-            double r = 1;
-            IEnumerable<ChargeObject> PosCharges = Charges.Where(point => point.Charge > 0);
+            double r = 10;
+            IEnumerable<ChargeObject> PositiveCharges = Charges.Where(point => point.Charge > 0);
 
-            foreach (ChargeObject PosCharge in PosCharges) 
+            if (PositiveCharges.Count() == 0)
             {
-                for(float a = 0; a < Math.PI * 2; a += (float)Math.PI * 2 / LinesCount)
+                isForceLines = false;
+                return;
+            }
+            isForceLines = true;
+
+            foreach (ChargeObject PosCharge in PositiveCharges)
+            {
+                for (float a = 0; a < Math.PI * 2; a += (float)Math.PI * 2 / LinesCount)
                 {
                     Point point = new(PosCharge.Position.X + Math.Cos(a) * r, PosCharge.Position.Y + Math.Sin(a) * r);
-
-                    //printEclipse(new Vector(point.X, point.Y), 2, Brushes.Orange);
-
                     ForceLinesPaint(point, h);
                 }
             }
         }
-        
-        void ForceLinesPaint(Point start,double h , int IterCount = 1000)
+
+        void ForceLinesPaint(Point start, double h, int IterCount = 1000)
         {
             Vector Vres = new();
 
             IterCount--;
-            if(IterCount <= 0 ) 
+            if (IterCount <= 0)
             {
                 return;
             }
 
-            foreach (ChargeObject Charge in Charges) 
-            { 
-                if(Charge.GetField(start.X, start.Y) < -1000000000) { return; }
+            foreach (ChargeObject Charge in Charges)
+            {
+                if (Charge.GetField(start.X, start.Y) < -1000000000) { return; }
 
                 Vector v = new()
                 {
@@ -355,7 +437,7 @@ namespace Линии
             double a = h;
 
             Vres.Normalize();
-            if (start.X > WindowWeight + h || start.X + h < 0 || start.Y > WindowHeight + h|| start.Y < 0)
+            if (start.X > WindowWeight + h || start.X + h < 0 || start.Y > WindowHeight + h || start.Y < 0)
                 a = 100;
             Vres *= a;
 
@@ -363,12 +445,7 @@ namespace Линии
                 printLine(new Vector(start.X, start.Y), new Vector(start.X + Vres.X, start.Y + Vres.Y), Brushes.Orange);
 
 
-            ForceLinesPaint(new Point(start.X + Vres.X, start.Y + Vres.Y),h, IterCount);
-        }
-
-        public void showError(string message)
-        {
-            MessageBox.Show(message);
+            ForceLinesPaint(new Point(start.X + Vres.X, start.Y + Vres.Y), h, IterCount);
         }
 
         private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -386,14 +463,124 @@ namespace Линии
 
             if (targetEllipse is null) targetEllipse = getEllipseFromMouse();
             if (targetEllipse is null) return;
+<<<<<<< HEAD
 
+=======
+>>>>>>> 8351067ae847de452a545575a388f8169efa3f65
             ChargeObject sameInCharges = Charges[ellipses.IndexOf(targetEllipse)];
             targetEllipse.RenderTransform = new TranslateTransform {X = mousePos.X, Y = mousePos.Y};
             sameInCharges.Position = new Point() { X = mousePos.X + 600, Y = mousePos.Y + 265+130 };
 
+            updateScene();
+        }
 
+<<<<<<< HEAD
             BtnStart.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
             button_forceLines.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+=======
+        private void ShowError(string message, string title = "Error")
+        {
+            MessageBox.Show(message, title);
+            return;
+        }
+
+        void updateScene(bool ignoreFlags=false)
+        {
+            if (isForceLines || ignoreFlags) button_forceLines.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+            if (isEquipotentials || ignoreFlags) button_equipotentials.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+        }
+
+        private void button_start_Click(object sender, RoutedEventArgs e)
+        {
+            if (Charges.Count == 0) return;
+            updateScene(true);
+        }
+
+        private void button_popUp1_Click(object sender, RoutedEventArgs e)
+        {
+            Button button = (Button)sender;
+            string? buttonText = button.Content.ToString();
+
+            if (buttonText is null)
+            {
+                ShowError("Ошибка!");
+                return;
+            }
+
+            buttons_popUpHandler(buttonText);
+            button.Visibility = Visibility.Hidden;
+            button.IsEnabled = false;
+        }
+
+        private void button_popUp2_Click(object sender, RoutedEventArgs e)
+        {
+            Button button = (Button)sender;
+            string? buttonText = button.Content.ToString();
+
+            if (buttonText is null)
+            {
+                ShowError("Ошибка!");
+                return;
+            }
+
+            buttons_popUpHandler(buttonText);
+            button.Visibility = Visibility.Hidden;
+            button.IsEnabled = false;
+        }
+
+        void updatePopUpButtons()
+        {
+            if (!isEquipotentials && !isForceLines)
+            {
+                button_popUp1.Visibility = Visibility.Hidden;
+                button_popUp1.IsEnabled = false;
+                button_popUp2.Visibility = Visibility.Hidden;
+                button_popUp2.IsEnabled = false;
+                return;
+            }
+
+            button_popUp1.Visibility = Visibility.Visible;
+            button_popUp1.IsEnabled = true;
+            if (isEquipotentials && isForceLines)
+            {
+                button_popUp1.Content = "Очистить линии напряженности";
+                button_popUp2.Content = "Очистить силовые линии";
+                button_popUp2.Visibility = Visibility.Visible;
+                button_popUp2.IsEnabled = true;
+                return;
+            }
+            
+            if (isForceLines)
+            {
+                button_popUp1.Content = "Очистить силовые линии";
+                button_popUp2.Visibility = Visibility.Hidden;
+                button_popUp2.IsEnabled = false;
+                return;
+            }
+            
+            if (isEquipotentials)
+            {
+                button_popUp1.Content = "Очистить линии напряженности";
+                button_popUp2.Visibility = Visibility.Hidden;
+                button_popUp2.IsEnabled = false;
+                return;
+            }
+        }
+
+        void buttons_popUpHandler(string action)
+        {
+            switch (action)
+            {
+                case "Очистить линии напряженности":
+                    removeLines(Brushes.LightSteelBlue);
+                    isEquipotentials = false;
+                    break;
+                case "Очистить силовые линии":
+                    removeLines(Brushes.Orange);
+                    isForceLines = false;
+                    break;
+            }
+>>>>>>> 8351067ae847de452a545575a388f8169efa3f65
         }
     }
 
