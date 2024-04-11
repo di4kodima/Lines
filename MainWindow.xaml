@@ -12,10 +12,10 @@
             <RowDefinition Height="130"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Grid x:Name="GridField" Grid.Row="1" Grid.Column="0" MouseLeftButtonDown="GridField_MouseDown" MouseLeftButtonUp="GridField_MouseUp" Background="Beige" MouseMove="Move_point"/>
+        <Grid x:Name="GridField" Grid.Row="1" Grid.Column="0" MouseLeftButtonDown="GridField_MouseDown" MouseRightButtonDown="GridField_removeEllipse" MouseLeftButtonUp="GridField_MouseUp" Background="Beige" MouseMove="Move_point"/>
         <ComboBox x:Name="CbxObjectType" Grid.Row="0" HorizontalAlignment="Left" Margin="37,30,0,0" VerticalAlignment="Top" Width="120" SelectedIndex="0"/>
         <TextBox x:Name="TbxCharge"  Grid.Row="0" HorizontalAlignment="Left" Margin="325,74,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="120"/>
-        <Button Content="Запуск"  Grid.Row="0" HorizontalAlignment="Left" Margin="1090,10,0,0"  VerticalAlignment="Top" Width="111" Click="Button_Click"/>
+        <Button x:Name="button_start" Content="Запуск"  Grid.Row="0" HorizontalAlignment="Left" Margin="1090,10,0,0"  VerticalAlignment="Top" Width="111" Click="button_start_Click"/>
         <Label  Grid.Row="0" Content="Диапазон:" HorizontalAlignment="Left" Margin="475,31,0,0" VerticalAlignment="Top"/>
         <TextBox x:Name="TbxEps"  Grid.Row="0" HorizontalAlignment="Left" Margin="325,36,0,0" TextWrapping="Wrap" Text="10" VerticalAlignment="Top" Width="120"/>
         <TextBox x:Name="TbxLInesCount"  Grid.Row="0" HorizontalAlignment="Left" Margin="965,12,0,0" TextWrapping="Wrap" Text="10" VerticalAlignment="Top" Width="120"/>
@@ -25,12 +25,20 @@
         <Label x:Name="Кол_во_силовых_линий" Content="Кол_во_силовых_линий" HorizontalAlignment="Left" Margin="835,40,0,0" VerticalAlignment="Top"/>
         <Label x:Name="Размер_растра" Content="Размер растра" HorizontalAlignment="Left" Margin="204,31,0,0" VerticalAlignment="Top"/>
         <Button x:Name="BtnReMoveLast" Click="BtnReMoveLast_Click" Content="Удалить последний" HorizontalAlignment="Left" Margin="1090,39,0,0" VerticalAlignment="Top"/>
-        <Button x:Name="button_forceLines" Click="button_forceLines__Click" Content="Отрисовать силовые линии" HorizontalAlignment="Left" Margin="1045,90,0,0" VerticalAlignment="Top" Width="156"/>
+        <Button x:Name="button_forceLines" Click="button_forceLines__Click" Content="Отрисовать силовые линии" HorizontalAlignment="Left" Margin="1040,90,0,0" VerticalAlignment="Top" Width="161"/>
         <Button x:Name="TbnClear" Click="TbnClear_Click" Content="Очистить" HorizontalAlignment="Left" Margin="1090,64,0,0" VerticalAlignment="Top" Width="111"/>
         <Label  Grid.Row="0" Content="до:" HorizontalAlignment="Left" Margin="666,32,0,0" VerticalAlignment="Top"/>
         <TextBox x:Name="TbxMinFieldValue" HorizontalAlignment="Left" Margin="541,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" Text="10000000"/>
         <TextBox x:Name="TbxMaxFieldValue" HorizontalAlignment="Left" Margin="697,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" Text="200000000"/>
         <Label Content="Шаг силовых линий" HorizontalAlignment="Left" Margin="475,70,0,0" VerticalAlignment="Top" Width="126"/>
         <TextBox x:Name="TbxForceLinesStep" HorizontalAlignment="Left" Margin="592,74,0,0" TextWrapping="Wrap" Text="5" VerticalAlignment="Top" Width="69"/>
+        <Button x:Name="button_equipotentials"  Grid.Row="0" HorizontalAlignment="Left" Margin="792,83,0,0"  VerticalAlignment="Top" Width="221" Click="button_equipotentials__Click" Height="40">
+            <TextBlock TextAlignment="Center" TextWrapping="Wrap" Width="168">
+                Отрисовать линии напряжен-
+                ности (эквипотенциали)
+            </TextBlock>
+        </Button>
+        <Button x:Name="button_popUp1" Content="Удалить линии напряженности" HorizontalAlignment="Left" VerticalAlignment="Top" Height="20" Width="186" Margin="4,0,0,0" Grid.Row="1" IsEnabled="False"  Click="button_popUp1_Click" Visibility="Hidden"/>
+        <Button x:Name="button_popUp2" Content="Очистить силовые линии" HorizontalAlignment="Left" Margin="4,25,0,0" VerticalAlignment="Top" Height="20" Width="186" Grid.Row="1" IsEnabled="False" Visibility="Hidden" Click="button_popUp2_Click"/>
     </Grid>
 </Window>
