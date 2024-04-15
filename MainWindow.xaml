@@ -12,6 +12,32 @@
             <RowDefinition Height="130"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
+
+        <Menu Height="25" VerticalAlignment="Top">
+            <MenuItem Header="Вид">
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="Толщина линий:"/>
+                    <TextBox x:Name="TbxStrokeTickness" Text="255" Height="15" Width="20" />
+                    <Slider x:Name="d" Value="0" Minimum="0" Maximum="20" SelectionStart="0" Height="30" Width="200" IsSelectionRangeEnabled="True" ValueChanged="d_ValueChanged" />
+                    <Line x:Name="LineStrokeTickness" Stroke="Black" X1="5" X2="5" Y1="5" Y2="20"  Height="20" Width="20"></Line>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="Цвет силовых линий:"/>
+                    <TextBox x:Name="TbxForceLinesWaveColor" Text="200"/>
+                    <Slider x:Name="SldForceLinesColor" Value="0" Minimum="400" Maximum="700" SelectionStart="0" Height="30" Width="200" IsSelectionRangeEnabled="True" ValueChanged="SldLinesColor_ValueChanged" />
+                    <Rectangle x:Name="RcgForceLinesColor" Stroke="Black" Fill="Firebrick"  Height="20" Width="20"></Rectangle>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="Цвет эквипотенциальных линий:"/>
+                    <TextBox x:Name="TbxPotencialLinesWaveColor" Text="200"/>
+                    <Slider x:Name="SldPotencialLinesColor" Value="0" Minimum="400" Maximum="700" SelectionStart="0" Height="30" Width="200" IsSelectionRangeEnabled="True" ValueChanged="SldPotencialLinesColor_ValueChanged" />
+                    <Rectangle x:Name="RcgPotentialLinesColor" Stroke="Black" Fill="Firebrick"  Height="20" Width="20"></Rectangle>
+                </StackPanel>
+                <Button Content="Exit" />
+                <TextBox Text="!@#ть"/>
+            </MenuItem>
+        </Menu>
+        
         <Grid x:Name="GridField" Grid.Row="1" Grid.Column="0" MouseLeftButtonDown="GridField_MouseDown" MouseRightButtonDown="GridField_removeEllipse" MouseLeftButtonUp="GridField_MouseUp" Background="Beige" MouseMove="Move_point"/>
         <ComboBox x:Name="CbxObjectType" Grid.Row="0" HorizontalAlignment="Left" Margin="37,30,0,0" VerticalAlignment="Top" Width="120" SelectedIndex="0"/>
         <TextBox x:Name="TbxCharge"  Grid.Row="0" HorizontalAlignment="Left" Margin="325,74,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="120"/>
@@ -40,5 +66,7 @@
         </Button>
         <Button x:Name="button_popUp1" Content="Удалить линии напряженности" HorizontalAlignment="Left" VerticalAlignment="Top" Height="20" Width="186" Margin="4,0,0,0" Grid.Row="1" IsEnabled="False"  Click="button_popUp1_Click" Visibility="Hidden"/>
         <Button x:Name="button_popUp2" Content="Очистить силовые линии" HorizontalAlignment="Left" Margin="4,25,0,0" VerticalAlignment="Top" Height="20" Width="186" Grid.Row="1" IsEnabled="False" Visibility="Hidden" Click="button_popUp2_Click"/>
+        
     </Grid>
+    
 </Window>
