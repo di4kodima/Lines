@@ -16,8 +16,8 @@ namespace Линии
 
     public partial class MainWindow : Window
     {
-        SolidColorBrush Potentialbrush = new SolidColorBrush();
-        SolidColorBrush ForceLinesBrush = new SolidColorBrush();
+        SolidColorBrush Potentialbrush = Brushes.LightSteelBlue;
+        SolidColorBrush ForceLinesBrush = Brushes.Orange;
         double LinesTickness = 1;
         double MinField = 0;
 
