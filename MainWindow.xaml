@@ -41,7 +41,11 @@
         <Grid x:Name="GridField" Grid.Row="1" Grid.Column="0" MouseLeftButtonDown="GridField_MouseDown" MouseRightButtonDown="GridField_removeEllipse" MouseLeftButtonUp="GridField_MouseUp" Background="Beige" MouseMove="Move_point"/>
         <ComboBox x:Name="CbxObjectType" Grid.Row="0" HorizontalAlignment="Left" Margin="37,30,0,0" VerticalAlignment="Top" Width="120" SelectedIndex="0"/>
         <TextBox x:Name="TbxCharge"  Grid.Row="0" HorizontalAlignment="Left" Margin="325,74,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="120"/>
+<<<<<<< HEAD
+        <Button x:Name="BtnStart"  Content="Запуск"  Grid.Row="0" HorizontalAlignment="Left" Margin="1090,10,0,0"  VerticalAlignment="Top" Width="111" Click="Button_Click"/>
+=======
         <Button x:Name="button_start" Content="Запуск"  Grid.Row="0" HorizontalAlignment="Left" Margin="1090,10,0,0"  VerticalAlignment="Top" Width="111" Click="button_start_Click"/>
+>>>>>>> 8351067ae847de452a545575a388f8169efa3f65
         <Label  Grid.Row="0" Content="Диапазон:" HorizontalAlignment="Left" Margin="475,31,0,0" VerticalAlignment="Top"/>
         <TextBox x:Name="TbxEps"  Grid.Row="0" HorizontalAlignment="Left" Margin="325,36,0,0" TextWrapping="Wrap" Text="10" VerticalAlignment="Top" Width="120"/>
         <TextBox x:Name="TbxLInesCount"  Grid.Row="0" HorizontalAlignment="Left" Margin="965,12,0,0" TextWrapping="Wrap" Text="10" VerticalAlignment="Top" Width="120"/>
