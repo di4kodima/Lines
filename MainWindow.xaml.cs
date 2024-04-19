@@ -1,13 +1,8 @@
 ﻿using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
-using System.Linq;
-using System.Windows.Documents;
-using System.Collections;
-using System.Windows.Controls;
-using Линии;
-using System.Windows.Media.Animation;
 
 namespace Линии
 {
@@ -15,39 +10,48 @@ namespace Линии
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     ///
+
+
     public enum Objects { point, line }
 
     public partial class MainWindow : Window
     {
-<<<<<<< HEAD
-        double WindowHeight;
-        double WindowWeight;
-=======
+        SolidColorBrush Potentialbrush = Brushes.LightSteelBlue;
+        SolidColorBrush ForceLinesBrush = Brushes.Orange;
+        double LinesTickness = 1;
+        double MinField = 0;
+
         public double WindowHeight;
         public double WindowWeight;
->>>>>>> 8351067ae847de452a545575a388f8169efa3f65
 
         private bool isMouseDown = false;
         Ellipse? targetEllipse = null;
         List<Ellipse> ellipses = new List<Ellipse>();
-<<<<<<< HEAD
-=======
 
         private bool IsForceLines = false;
         private bool IsEquipotentials = false;
 
-        private bool isForceLines { get { return IsForceLines; } set {
+        private bool isForceLines
+        {
+            get { return IsForceLines; }
+            set
+            {
                 IsForceLines = value;
                 updatePopUpButtons();
+                return;
             }
         }
-        private bool isEquipotentials { get { return IsEquipotentials; }
-            set {
+
+        private bool isEquipotentials
+        {
+            get { return IsEquipotentials; }
+            set
+            {
                 IsEquipotentials = value;
                 updatePopUpButtons();
+                return;
             }
         }
->>>>>>> 8351067ae847de452a545575a388f8169efa3f65
 
         Objects CurBrush;
         protected List<ChargeObject> Charges = new();
@@ -56,12 +60,13 @@ namespace Линии
             InitializeComponent();
         }
 
-        protected void printLine(Vector pointFrom, Vector pointTo, Brush color, float scale=1)
+        protected void printLine(Vector pointFrom, Vector pointTo, Brush color, float scale = 1)
         {
             Line line = new Line();
             (line.X1, line.Y1) = (pointFrom.X, pointFrom.Y - 130);
             (line.X2, line.Y2) = (pointTo.X, pointTo.Y - 130);
             line.Stroke = color;
+            line.StrokeThickness = LinesTickness;
 
             GridField.Children.Add(line);
         }
@@ -69,7 +74,7 @@ namespace Линии
         void printEllipse(Vector position, int Width, Brush color)
         {
             Ellipse p = new();
-            p.RenderTransform = new TranslateTransform { X = position.X - 600, Y = position.Y - 400};
+            p.RenderTransform = new TranslateTransform { X = position.X - 600, Y = position.Y - 400 };
             p.Margin = new();
             p.StrokeThickness = 1;
             p.Height = p.Width = Width;
@@ -105,42 +110,47 @@ namespace Линии
             }
             if (points.Count == 2)
             {
-                isEquipotentials = true;
-                printLine(new Vector(points[0].X, points[0].Y), new Vector(points[1].X, points[1].Y), Brushes.LightSteelBlue);
+                printLine(new Vector(points[0].X, points[0].Y), new Vector(points[1].X, points[1].Y), Potentialbrush);
             }
         }
-        
-        bool OnLine(double x1, double x2, double y1, double y2,double h, double v, out Point p)
+
+        bool OnLine(double x1, double x2, double y1, double y2, double h, double v, out Point p)
         {
-            double min = Math.Min(func(x1, y1), func(x2, y2));
-            double max = Math.Max(func(x1, y1), func(x2, y2));
-            if(x1 != x2)
-                if (func(x1,y1) < func(x2,y2))
-                    p.X = x1 + h *(v - min)/(max - min);
+            double f1 = func(x1, y1);
+            double f2 = func(x2, y2);
+            double min = Math.Min(f1, f2);
+            double max = Math.Max(f1, f2);
+            if (x1 != x2)
+                if (f1 < f2)
+                    p.X = x1 + h * (v - min) / (max - min);
                 else
-                    p.X = x1 + h * ( 1 - (v - min) / (max - min));
+                    p.X = x1 + h * (1 - (v - min) / (max - min));
             else
                 p.X = x1;
 
-            if(y2 != y1)
-                if (func(x1, y1) > func(x2, y2))
-                    p.Y= y1 + h *(1 - (v - min) / (max - min));
+            if (y2 != y1)
+                if (f1 > f2)
+                    p.Y = y1 + h * (1 - (v - min) / (max - min));
                 else
-                    p.Y = y1 + h * ( (v - min) / (max - min));
-
+                    p.Y = y1 + h * ((v - min) / (max - min));
             else
-                p.Y= y1;
-                return (v <= max && v > min);
+                p.Y = y1;
+            return (v <= max && v > min);
         }
 
         double func(double x, double y)
         {
             double Field = 0;
-            foreach(ChargeObject charge in Charges)
+            foreach (ChargeObject charge in Charges)
             {
                 Field += charge.GetField(x, y);
             }
             return Field;
+        }
+
+        double _func(double x, double y)
+        {
+            return x - 2 * y;
         }
 
         private void GridField_MouseDown(object sender, MouseButtonEventArgs e)
@@ -195,9 +205,14 @@ namespace Линии
             if (ellipses.Count <= 0) return null;
 
             foreach (Ellipse ellipse in ellipses)
+            {
+                //MessageBox.Show(ellipses.Count.ToString());
+                //if (ellipse.RenderedGeometry.FillContains(mousePos, 300, ToleranceType.Relative))
                 if (ellipse.IsMouseOver)
+                {
                     return ellipse;
-
+                }
+            }
             return null;
         }
 
@@ -230,28 +245,7 @@ namespace Линии
         {
             if (Charges.Count == 0) return;
 
-<<<<<<< HEAD
-
-            List<UIElement> LinesToRemove = new List<UIElement>();
-
-            //Ещем все объекты, которые линии
-            foreach (UIElement element in GridField.Children)
-            {
-                if (element is Line && ((Line)element).Stroke == Brushes.LightSteelBlue)
-                {
-                    LinesToRemove.Add(element);
-                }
-            }
-
-            foreach (var L in LinesToRemove)
-            {
-                GridField.Children.Remove(L);
-            }
-=======
-            removeLines(Brushes.LightSteelBlue);
->>>>>>> 8351067ae847de452a545575a388f8169efa3f65
-
-            FieldDelLinesFromGrid(GridField);
+            removeLines(Potentialbrush);
 
             List<double> values = new();
 
@@ -272,16 +266,16 @@ namespace Линии
                 ShowError("Неверно задано количество линий поля!");
                 return;
             }
-            for (int i = 1; i < LinesCount + 1; i++ )
+            for (int i = 1; i < LinesCount + 1; i++)
             {
                 values.Add((MaxField - MinField) / LinesCount * i);
             }
-            if(!double.TryParse(TbxEps.Text,out double h))
+            if (!double.TryParse(TbxEps.Text, out double h))
             {
                 ShowError("Неверно задан размер растра!");
                 return;
             }
-            
+            isEquipotentials = true;
             for (double i = 0; i < 1200 / h; i++)
             {
                 for (double j = 0; j < 800 / h; j++)
@@ -297,42 +291,24 @@ namespace Линии
 
         private void BtnReMoveLast_Click(object sender, RoutedEventArgs e)
         {
-            if(Charges.Count == 0) return;
+            if (Charges.Count == 0) return;
 
-<<<<<<< HEAD
-            Charges.RemoveAt(Charges.Count - 1);
-            ellipses.RemoveAt(ellipses.Count - 1);
-
-            targetEllipse = null;
-
-            List<UIElement> asd = new List<UIElement>();
-            foreach (var val in GridField.Children)
-            {
-                if (val is Ellipse)
-                    asd.Add((Ellipse)val);
-            }
-
-            GridField.Children.Remove(asd[asd.Count - 1]);
-=======
             int countOfCharges = Charges.Count();
             if (countOfCharges == 0) return;
             if (countOfCharges == 1) TbnClear.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
 
-            int indexOfellipse = ellipses.Count-1;
+            int indexOfellipse = ellipses.Count - 1;
             if (indexOfellipse == -1) return;
             GridField.Children.Remove(ellipses[indexOfellipse]);
             Charges.RemoveAt(indexOfellipse);
             ellipses.RemoveAt(indexOfellipse);
 
             updateScene();
->>>>>>> 8351067ae847de452a545575a388f8169efa3f65
         }
 
         private void TbnClear_Click(object sender, RoutedEventArgs e)
         {
             Charges.Clear();
-            ellipses.Clear();
-            targetEllipse = null;
             GridField.Children.Clear();
             ellipses.Clear();
             isForceLines = false;
@@ -340,17 +316,7 @@ namespace Линии
         }
 
 
-<<<<<<< HEAD
-        private void FieldDelLinesFromGrid(Grid grid)
-        {
-            grid.Children.Clear();
-            foreach(Ellipse el in ellipses)
-                grid.Children.Add(el);
-        }
-        private void button_forceLines__Click(object sender, RoutedEventArgs e)
-=======
         void removeLines(Brush color)
->>>>>>> 8351067ae847de452a545575a388f8169efa3f65
         {
             //Мусорка для старых линий
             List<UIElement> LinesToRemove = new List<UIElement>();
@@ -374,7 +340,7 @@ namespace Линии
         {
             if (Charges.Count == 0) return;
 
-            removeLines(Brushes.Orange);
+            removeLines(ForceLinesBrush);
 
             if (!int.TryParse(input_ForceLinesCount.Text, out int LinesCount))
             {
@@ -420,8 +386,10 @@ namespace Линии
 
             foreach (ChargeObject Charge in Charges)
             {
-                if (Charge.GetField(start.X, start.Y) < -1000000000) { return; }
+                double Field = Charge.GetField(start.X, start.Y);
 
+                if (Field < -1000000000) return;
+                if (Math.Abs(Field) < 0.00000000001) return;
                 Vector v = new()
                 {
                     X = -Charge.Position.X + start.X,
@@ -439,10 +407,11 @@ namespace Линии
             Vres.Normalize();
             if (start.X > WindowWeight + h || start.X + h < 0 || start.Y > WindowHeight + h || start.Y < 0)
                 a = 100;
+
             Vres *= a;
 
             if (!(start.X > WindowWeight || start.X < 0 || start.Y > WindowHeight || start.Y < 0))
-                printLine(new Vector(start.X, start.Y), new Vector(start.X + Vres.X, start.Y + Vres.Y), Brushes.Orange);
+                printLine(new Vector(start.X, start.Y), new Vector(start.X + Vres.X, start.Y + Vres.Y), ForceLinesBrush);
 
 
             ForceLinesPaint(new Point(start.X + Vres.X, start.Y + Vres.Y), h, IterCount);
@@ -463,28 +432,20 @@ namespace Линии
 
             if (targetEllipse is null) targetEllipse = getEllipseFromMouse();
             if (targetEllipse is null) return;
-<<<<<<< HEAD
-
-=======
->>>>>>> 8351067ae847de452a545575a388f8169efa3f65
             ChargeObject sameInCharges = Charges[ellipses.IndexOf(targetEllipse)];
-            targetEllipse.RenderTransform = new TranslateTransform {X = mousePos.X, Y = mousePos.Y};
-            sameInCharges.Position = new Point() { X = mousePos.X + 600, Y = mousePos.Y + 265+130 };
+            targetEllipse.RenderTransform = new TranslateTransform { X = mousePos.X, Y = mousePos.Y };
+            sameInCharges.Position = new Point() { X = mousePos.X + 600, Y = mousePos.Y + 265 + 130 };
 
             updateScene();
         }
 
-<<<<<<< HEAD
-            BtnStart.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
-            button_forceLines.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
-=======
         private void ShowError(string message, string title = "Error")
         {
             MessageBox.Show(message, title);
             return;
         }
 
-        void updateScene(bool ignoreFlags=false)
+        void updateScene(bool ignoreFlags = false)
         {
             if (isForceLines || ignoreFlags) button_forceLines.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
             if (isEquipotentials || ignoreFlags) button_equipotentials.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
@@ -508,8 +469,7 @@ namespace Линии
             }
 
             buttons_popUpHandler(buttonText);
-            button.Visibility = Visibility.Hidden;
-            button.IsEnabled = false;
+            updatePopUpButtons();
         }
 
         private void button_popUp2_Click(object sender, RoutedEventArgs e)
@@ -524,12 +484,12 @@ namespace Линии
             }
 
             buttons_popUpHandler(buttonText);
-            button.Visibility = Visibility.Hidden;
-            button.IsEnabled = false;
+            updatePopUpButtons();
         }
 
         void updatePopUpButtons()
         {
+
             if (!isEquipotentials && !isForceLines)
             {
                 button_popUp1.Visibility = Visibility.Hidden;
@@ -549,7 +509,7 @@ namespace Линии
                 button_popUp2.IsEnabled = true;
                 return;
             }
-            
+
             if (isForceLines)
             {
                 button_popUp1.Content = "Очистить силовые линии";
@@ -557,7 +517,7 @@ namespace Линии
                 button_popUp2.IsEnabled = false;
                 return;
             }
-            
+
             if (isEquipotentials)
             {
                 button_popUp1.Content = "Очистить линии напряженности";
@@ -580,7 +540,36 @@ namespace Линии
                     isForceLines = false;
                     break;
             }
->>>>>>> 8351067ae847de452a545575a388f8169efa3f65
+        }
+
+        private void SldLinesColor_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            TbxForceLinesWaveColor.Text = ((int)e.NewValue).ToString();
+            WaveConverter.WavelengthToRGB(e.NewValue, out int R, out int G , out int B);
+            if (RcgForceLinesColor == null) return;
+            removeLines(ForceLinesBrush);
+            ForceLinesBrush = new SolidColorBrush(Color.FromArgb(255, (byte)R, (byte)G, (byte)B));
+            RcgForceLinesColor.Fill = ForceLinesBrush;
+            updateScene();
+        }
+
+        private void d_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            TbxStrokeTickness.Text = ((int)e.NewValue).ToString();
+            if(LineStrokeTickness is null) return;
+            LinesTickness = e.NewValue;
+            LineStrokeTickness.StrokeThickness = e.NewValue;
+            updateScene();
+        }
+
+        private void SldPotencialLinesColor_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            TbxPotencialLinesWaveColor.Text = ((int)e.NewValue).ToString();
+            WaveConverter.WavelengthToRGB(e.NewValue, out int R, out int G, out int B);
+            if (RcgPotentialLinesColor == null) return;
+            Potentialbrush = new SolidColorBrush(Color.FromArgb(255, (byte)R, (byte)G, (byte)B));
+            RcgPotentialLinesColor.Fill = Potentialbrush;
+            updateScene();
         }
     }
 
